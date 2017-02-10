@@ -1,0 +1,8 @@
+.idea/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake-build-debug/
+cmake_install.cmake
+libuv.a
+sunrise
