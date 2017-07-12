@@ -48,15 +48,20 @@ static std::unordered_map<void*, msg_md> counts;
 
 void destroy_stream_context(uv_handle_t *handle) noexcept {
   void* v;
-  auto f = ctx.find(reinterpret_cast<uv_stream_t*>(handle));
-  if (f == ctx.end()) {
-    goto destroy_context_end;
-  }
+  uv_stream_t* stream = uv_downcast<uv_stream_t>(handle);
+  uv_tcp_t* tcp = uv_downcast<uv_tcp_t>(handle);
 
-  v = f->second;
-  ctx.erase(f);
-  if (v != nullptr) {
-    free(v);
+  if (stream) {
+    auto f = ctx.find(stream);
+    if (f == ctx.end()) {
+      goto destroy_context_end;
+    }
+
+    v = f->second;
+    ctx.erase(f);
+    if (v != nullptr) {
+      free(v);
+    }
   }
   destroy_context_end: {
     free(handle);
